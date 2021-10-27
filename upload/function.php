@@ -54,7 +54,7 @@ function upload()
         return false;
     }
 
-    //cek apakah yang diupload adalah gambar
+    //cek apakah yang diupload adalah gambarr
     $ekstensiGambarValid = ['JPG', 'jpeg', 'png', 'jpg', 'PNG', 'JPEG'];
     $ekstensiGambar = explode('.', $nameFile);
     // fungsi explode itu string menjadi array , kalau nama
@@ -64,10 +64,57 @@ function upload()
         echo "<script>
         alert('yang anda upload bukan gambar');
             </script>";
+            return false;
     }
 
-    //
+    //cek jika file ukurannya terlalu besar
+    if ($ukuranFile > 1000000) {
+        echo "<script>
+        alert('gambar yang anda upload terlalu besar');
+            </script>";
+            return false;
+    }
 
+    //lolos pengecekan, gambar siap diupload
+    //dan generate nama baru
+    $namafilebaru = uniqid();
+    $namafilebaru .= '.';
+    $namafilebaru .= $ekstensiGambar
+
+    move_uploaded_file($tmpName, 'img/' . $namafilebaru);
+    return $namafilebaru;
+}
+
+function ubah($data){
+    global $conn;
+    //ambil dari data elemen form
+    $id = $data["id"];
+    $nim = htmlspecialchars($data["nim"]);
+    $nama = htmlspecialchars($data["nama"]);
+    $email = htmlspecialchars($data["email"]);
+    $jurusan = htmlspecialchars($data["jurusan"]);
+    $gamabar = htmlspecialchars($data["gamabar"]);
+
+//cek apakah user pilih gambar baru atau tidak
+$gambarlama = htmlspecialchars($data["gambarlama"]);
+if ($_FILES["gambar"]["error"] === 4 ) {
+    $gambar = $gambarlama;
+}else{
+    $gambar = upload();
+}
+
+    //query insertnya
+    $query = "UPDATE siswa SET
+    nim = '$nim',
+   nama = '$nama',
+   jurusan = '$jurusan',
+   email = '$email',
+   gambar =  '$gambar'
+   WHERE id = $id
+   ";
+   mysqli_query($conn, $query);
+
+   return mysqli_affected_rows($conn);
 }
 
 

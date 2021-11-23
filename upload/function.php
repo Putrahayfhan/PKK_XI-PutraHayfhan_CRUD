@@ -79,7 +79,7 @@ function upload()
     //dan generate nama baru
     $namafilebaru = uniqid();
     $namafilebaru .= '.';
-    $namafilebaru .= $ekstensiGambar
+    $namafilebaru .= $ekstensiGambar;
 
     move_uploaded_file($tmpName, 'img/' . $namafilebaru);
     return $namafilebaru;
